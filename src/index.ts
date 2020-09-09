@@ -1,7 +1,7 @@
 import pluginTransform from '@babel/plugin-transform-runtime'
 import presetEnv from '@babel/preset-env'
 import presetReact from '@babel/preset-react'
-import { join, parse } from 'path'
+import { join } from 'path'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { _clearCache, _require } from './require'
@@ -18,6 +18,7 @@ interface IExpressReactOptions {
 
 export = function render(options?: IExpressReactOptions) {
   return function (
+    this: { root: string; ext: string },
     filename: string,
     props: Record<string, unknown>,
     callback: (e: any, rendered?: string) => void
@@ -29,8 +30,7 @@ export = function render(options?: IExpressReactOptions) {
     try {
       let component = React.createElement(_require(filename), props)
       if (layout) {
-        const { dir, ext } = parse(filename)
-        const layoutPath = join(dir, `${layout}${ext}`)
+        const layoutPath = join(this.root, `${layout}${this.ext}`)
         component = React.createElement(_require(layoutPath), props, component)
       }
       callback(null, ReactDOMServer.renderToStaticMarkup(component))
