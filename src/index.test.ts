@@ -21,48 +21,31 @@ describe('render', () => {
 
   describe('cache', () => {
     it('should clear cache if cache option is false', () => {
-      render({ root: 'root', cache: false })('filename', {}, jest.fn())
+      render({ cache: false })('filename', {}, jest.fn())
       expect(_clearCache).toHaveBeenCalled()
     })
 
     it('should not clear cache if cache option is true', () => {
-      render({ root: 'root', cache: true })('filename', {}, jest.fn())
+      render({ cache: true })('filename', {}, jest.fn())
       expect(_clearCache).not.toHaveBeenCalled()
     })
 
     it('should not clear cache if cache option is not specified', () => {
-      render({ root: 'root' })('filename', {}, jest.fn())
+      render({})('filename', {}, jest.fn())
       expect(_clearCache).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('extension', () => {
-    it('should use jsx as default extension', () => {
-      render({ root: 'root' })('filename', {}, jest.fn())
-      expect(_require).toHaveBeenCalledWith('root/filename.jsx')
-    })
-
-    it('should use provided extension', () => {
-      render({ root: 'root', ext: 'tsx' })('filename', {}, jest.fn())
-      expect(_require).toHaveBeenCalledWith('root/filename.tsx')
-    })
-
-    it('should use provided extension without starting dot', () => {
-      render({ root: 'root', ext: '.tsx' })('filename', {}, jest.fn())
-      expect(_require).toHaveBeenCalledWith('root/filename.tsx')
     })
   })
 
   describe('component', () => {
     it('should create component', () => {
-      render({ root: 'root' })('filename', {}, jest.fn())
-      expect(createElementMock).toHaveBeenCalledWith('root/filename.jsx', {})
+      render({})('filename', {}, jest.fn())
+      expect(createElementMock).toHaveBeenCalledWith('filename', {})
     })
 
     it('should send component to callback', () => {
       const callback = jest.fn()
-      render({ root: 'root' })('filename', {}, callback)
-      expect(callback).toHaveBeenCalledWith(null, 'root/filename.jsx')
+      render({})('filename', {}, callback)
+      expect(callback).toHaveBeenCalledWith(null, 'filename')
     })
 
     it('should send error to callback', () => {
@@ -70,22 +53,22 @@ describe('render', () => {
         throw new Error('500')
       })
       const callback = jest.fn()
-      render({ root: 'root', layout: 'Layout' })('filename', {}, callback)
+      render({})('filename', {}, callback)
       expect(callback).toHaveBeenCalledWith(new Error('500'))
     })
   })
 
   describe('layout', () => {
     it('should not create layout if layout option is not provided', () => {
-      render({ root: 'root' })('filename', {}, jest.fn())
+      render({})('filename', {}, jest.fn())
       expect(createElementMock).toHaveBeenCalledTimes(1)
-      expect(renderMock).toHaveBeenCalledWith('root/filename.jsx')
+      expect(renderMock).toHaveBeenCalledWith('filename')
     })
 
     it('should create layout using layout option', () => {
-      render({ root: 'root', layout: 'Layout' })('filename', {}, jest.fn())
-      expect(createElementMock).toHaveBeenCalledWith('root/Layout.jsx', {}, 'root/filename.jsx')
-      expect(renderMock).toHaveBeenCalledWith('root/Layout.jsx')
+      render({ layout: 'Layout' })('filename', {}, jest.fn())
+      expect(createElementMock).toHaveBeenCalledWith('Layout', {}, 'filename')
+      expect(renderMock).toHaveBeenCalledWith('Layout')
     })
   })
 })
