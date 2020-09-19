@@ -1,4 +1,3 @@
-import pluginTransform from '@babel/plugin-transform-runtime'
 import presetEnv from '@babel/preset-env'
 import presetReact from '@babel/preset-react'
 import { join } from 'path'
@@ -6,10 +5,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { _clearCache, _require } from './require'
 
-require('@babel/register')({
-  presets: [presetReact, presetEnv],
-  plugins: [pluginTransform],
-})
+require('@babel/register')({ presets: [presetReact, presetEnv] })
 
 interface IExpressReactOptions {
   cache?: boolean
