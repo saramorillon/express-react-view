@@ -22,7 +22,12 @@ describe('render', () => {
   describe('cache', () => {
     it('should clear cache if cache option is false', () => {
       render({ cache: false }).call({ root: 'root', ext: '.ext' }, 'filename', {}, jest.fn())
-      expect(_clearCache).toHaveBeenCalled()
+      expect(_clearCache).toHaveBeenCalledWith('filename')
+    })
+
+    it('should clear layout cache if cache option is false and layout is provided', () => {
+      render({ cache: false, layout: 'Layout' }).call({ root: 'root', ext: '.ext' }, 'filename', {}, jest.fn())
+      expect(_clearCache).toHaveBeenCalledWith('root/Layout.ext')
     })
 
     it('should not clear cache if cache option is true', () => {
@@ -39,7 +44,7 @@ describe('render', () => {
   describe('component', () => {
     it('should create component', () => {
       render({}).call({ root: 'root', ext: '.ext' }, 'filename', {}, jest.fn())
-      expect(createElementMock).toHaveBeenCalledWith('filename', {})
+      expect(createElementMock).toHaveBeenCalledWith('filename', {}, [])
     })
 
     it('should send component to callback', () => {
@@ -67,7 +72,7 @@ describe('render', () => {
 
     it('should create layout using layout option', () => {
       render({ layout: 'Layout' }).call({ root: 'root', ext: '.ext' }, 'filename', {}, jest.fn())
-      expect(createElementMock).toHaveBeenCalledWith('root/Layout.ext', {}, 'filename')
+      expect(createElementMock).toHaveBeenCalledWith('root/Layout.ext', {}, ['filename'])
       expect(renderMock).toHaveBeenCalledWith('root/Layout.ext')
     })
   })

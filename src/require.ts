@@ -1,6 +1,8 @@
-export function _clearCache(): void {
+export function _clearCache(filename: string): void {
   Object.keys(require.cache).forEach(function (key) {
-    delete require.cache[key]
+    if (require.cache[key]?.filename?.endsWith(filename)) {
+      delete require.cache[key]
+    }
   })
 }
 

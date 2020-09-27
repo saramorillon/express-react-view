@@ -12,6 +12,13 @@ interface IExpressReactOptions {
   layout?: string
 }
 
+function createComponent(path: string, props: Record<string, unknown>, cache: boolean, ...children: React.ReactNode[]) {
+  if (!cache) {
+    _clearCache(path)
+  }
+  return React.createElement(_require(path), props, children)
+}
+
 export = function render(options?: IExpressReactOptions) {
   return function (
     this: { root: string; ext: string },
@@ -20,14 +27,11 @@ export = function render(options?: IExpressReactOptions) {
     callback: (e: any, rendered?: string) => void
   ): void {
     const { cache = true, layout } = options || {}
-    if (!cache) {
-      _clearCache()
-    }
     try {
-      let component = React.createElement(_require(filename), props)
+      let component = createComponent(filename, props, cache)
       if (layout) {
         const layoutPath = join(this.root, `${layout}${this.ext}`)
-        component = React.createElement(_require(layoutPath), props, component)
+        component = createComponent(layoutPath, props, cache, component)
       }
       callback(null, ReactDOMServer.renderToStaticMarkup(component))
     } catch (error) {
