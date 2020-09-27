@@ -1,6 +1,7 @@
-export function _clearCache(filename: string): void {
+export function _clearCache(root: string, ext: string): void {
+  const moduleRegex = new RegExp(`^${root}.*${ext}$`)
   Object.keys(require.cache).forEach(function (key) {
-    if (require.cache[key]?.filename?.endsWith(filename)) {
+    if (moduleRegex.test(require.cache[key]?.filename || '')) {
       delete require.cache[key]
     }
   })

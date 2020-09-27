@@ -22,12 +22,7 @@ describe('render', () => {
   describe('cache', () => {
     it('should clear cache if cache option is false', () => {
       render({ cache: false }).call({ root: 'root', ext: '.ext' }, 'filename', {}, jest.fn())
-      expect(_clearCache).toHaveBeenCalledWith('filename')
-    })
-
-    it('should clear layout cache if cache option is false and layout is provided', () => {
-      render({ cache: false, layout: 'Layout' }).call({ root: 'root', ext: '.ext' }, 'filename', {}, jest.fn())
-      expect(_clearCache).toHaveBeenCalledWith('root/Layout.ext')
+      expect(_clearCache).toHaveBeenCalledWith('root', '.ext')
     })
 
     it('should not clear cache if cache option is true', () => {
