@@ -12,11 +12,11 @@ interface IExpressReactOptions {
   layout?: string
 }
 
-export = function render(options?: IExpressReactOptions) {
+export = function render<T = never>(options?: IExpressReactOptions) {
   return function (
     this: { root: string; ext: string },
     filename: string,
-    props: Record<string, unknown>,
+    props: T,
     callback: (e: any, rendered?: string) => void
   ): void {
     const { cache = true, layout } = options || {}
